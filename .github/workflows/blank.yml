@@ -1,0 +1,29 @@
+name: Auto Run 20 Bitping Nodes (Hardcoded)
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-bitping-nodes:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false 
+      matrix:
+        node_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+    steps:
+      - name: Khởi chạy Node số ${{ matrix.node_id }}
+        run: |
+          echo "Đang khởi động luồng chạy số ${{ matrix.node_id }}..."
+          
+          # Chạy thẳng Docker, nhét luôn tài khoản và pass vào lệnh
+          timeout 350m docker run --name bitping-node-${{ matrix.node_id }} \
+            -e BITPING_EMAIL="phantrongkien54@gmail.com" \
+            -e BITPING_PASSWORD="KIEN@1234" \
+            -e EMAIL="phantrongkien54@gmail.com" \
+            -e PASSWORD="KIEN@1234" \
+            bitping/bitping-node:latest || true
+          
+          echo "Node số ${{ matrix.node_id }} đã hoàn thành."
